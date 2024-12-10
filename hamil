@@ -1,0 +1,57 @@
+funcprot(0);
+
+function findHamiltonianCyclesIterative(graph)
+    n = size(graph, "r");
+    stack = [1];
+    path = zeros(1, n);
+    path(1) = 1;
+    visited = zeros(1, n);
+    visited(1) = 1;
+    pos = 2;
+    cycles = [];
+
+    while ~isempty(stack)
+        vertex = stack($);
+        stack($) = [];
+        path(pos) = vertex;
+        visited(vertex) = 1;
+
+        if pos == n & graph(path(pos), path(1)) == 1 then
+            cycles($ + 1, :) = [path(1:pos), 1];
+        else
+            for neighbor = n:-1:2
+                if graph(vertex, neighbor) == 1 & visited(neighbor) == 0 then
+                    stack($ + 1) = neighbor;
+                end
+            end
+        end
+
+        if isempty(stack) | (pos > 1 & stack($) < vertex) then
+            visited(vertex) = 0;
+            path(pos) = 0;
+            pos = pos - 1;
+        else
+            pos = pos + 1;
+        end
+    end
+
+    disp("Hamiltonian Cycles:");
+    if size(cycles, 1) > 0 then
+        for i = 1:size(cycles, 1)
+            disp(cycles(i, :));
+        end
+    else
+        disp("No Hamiltonian Cycles Found.");
+    end
+endfunction
+
+disp("Graph 3: Medium-Sized Graph");
+graph_medium = [
+    0 1 1 1 0 0;
+    1 0 1 0 1 0;
+    1 1 0 0 0 1;
+    1 0 0 0 1 1;
+    0 1 0 1 0 1;
+    0 0 1 1 1 0
+];
+findHamiltonianCyclesIterative(graph_medium);
